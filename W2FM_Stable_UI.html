@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Legacy Formatter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #F5F7FA;
+    --surface:   #FFFFFF;
+    --surface2:  #F0F2F7;
+    --border:    #E2E6EF;
+    --violet:    #7C3AED;
+    --violet-lt: #9D5FF3;
+    --fuchsia:   #C026D3;
+    --muted:     #94A3B8;
+    --subtle:    #64748B;
+    --text:      #1E293B;
+    --white:     #FFFFFF;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    height: 52px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--violet), var(--fuchsia));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .logo-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-tag {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 2px;
+  }
+
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge-version {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--violet);
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  /* ── App shell ── */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding-top: 52px;
+    padding-bottom: 32px;
+  }
+
+  /* ── Workspace ── */
+  .workspace {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 64px 1fr;
+    padding: 20px 24px 0;
+    min-height: 0;
+  }
+
+  /* ── Panel ── */
+  .panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    flex-shrink: 0;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-input  { background: #38BDF8; }
+  .dot-output { background: var(--fuchsia); }
+
+  .char-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .editor {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    outline: none;
+    min-height: 0;
+    background: var(--white);
+  }
+
+  .editor:empty::before {
+    content: attr(data-placeholder);
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .editor:focus {
+    box-shadow: inset 0 0 0 2px rgba(124, 58, 237, 0.15);
+  }
+
+  #output b {
+    font-weight: bold;
+  }
+
+  #output a {
+    color: #2563EB;
+    text-decoration: underline;
+  }
+
+  #output a:hover {
+    color: #1D4ED8;
+  }
+
+  #output u {
+    text-decoration: underline;
+  }
+
+  .editor::-webkit-scrollbar { width: 5px; }
+  .editor::-webkit-scrollbar-track { background: transparent; }
+  .editor::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── Arrow column ── */
+  .arrow-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arrow-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  /* ── Controls ── */
+  .controls {
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    flex-shrink: 0;
+    box-shadow: 0 -1px 3px rgba(0,0,0,0.04);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    letter-spacing: -0.1px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--violet), #6D28D9);
+    color: white;
+    box-shadow: 0 1px 8px rgba(124,58,237,0.25);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--violet-lt), var(--violet));
+    box-shadow: 0 2px 14px rgba(124,58,237,0.35);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--subtle);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--violet);
+    color: var(--violet);
+    background: rgba(124,58,237,0.04);
+  }
+
+  /* ── Status bar ── */
+  .statusbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 32px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 20px;
+  }
+
+  .status-item {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22C55E;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 48px;
+    right: 24px;
+    background: var(--text);
+    color: var(--white);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-icon { color: #4ADE80; }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-mark">S2</div>
+    <span class="logo-name">Legacy Formatter</span>
+  </div>
+  <div class="topbar-right">
+    <span class="badge-version">Stable</span>
+  </div>
+</header>
+
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span>Copied!</span>
+</div>
+
+<div class="app">
+  <div class="workspace">
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-label">
+          <span class="dot dot-input"></span>Input
+        </div>
+        <span class="char-count" id="inputCount">Characters: 0</span>
+      </div>
+      <div id="input" class="editor" contenteditable="true"
+           data-placeholder="Paste your legacy content here…"></div>
+    </div>
+
+    <div class="arrow-col">
+      <div class="arrow-icon">→</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-label">
+          <span class="dot dot-output"></span>Output
+        </div>
+        <span class="char-count" id="outputCount">Characters: 0</span>
+      </div>
+      <div id="output" class="editor" contenteditable="true"
+           data-placeholder="Cleaned output will appear here…"></div>
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" onclick="cleanContent()">⚡ Clean</button>
+    <button class="btn btn-secondary" onclick="copyOutput()">⎘ Copy Output</button>
+  </div>
+</div>
+
+<div class="statusbar">
+  <div class="status-item">
+    <div class="status-dot"></div>
+    Ready
+  </div>
+</div>
+
+<script>
+
+const input = document.getElementById("input");
+const output = document.getElementById("output");
+const inputCount = document.getElementById("inputCount");
+const outputCount = document.getElementById("outputCount");
+const toast = document.getElementById("toast");
+
+function updateCounts() {
+  inputCount.innerText = "Characters: " + input.innerText.length;
+  outputCount.innerText = "Characters: " + output.innerText.length;
+}
+
+input.addEventListener("input", updateCounts);
+output.addEventListener("input", updateCounts);
+
+function cleanContent() {
+
+  let clone = input.cloneNode(true);
+
+  // ✅ STEP 1: Convert <strong> → <b>
+  clone.querySelectorAll("strong").forEach(el => {
+    let b = document.createElement("b");
+    b.innerHTML = el.innerHTML;
+    el.replaceWith(b);
+  });
+
+  // ✅ STEP 2: Convert inline styling → <b> / <u>
+  clone.querySelectorAll("*").forEach(el => {
+    if (el.tagName === "A") return; // never unwrap links
+
+    let style = el.getAttribute("style") || "";
+    let isBold = /font-weight\s*:\s*(bold|600|700)/i.test(style);
+    let isLarge = /font-size\s*:\s*(1[5-9]|[2-9]\d)pt/i.test(style);
+    let isUnderline = /text-decoration[^:;"]*:[^;"]*underline/i.test(style);
+
+    if (!isBold && !isLarge && !isUnderline) return;
+
+    // Fold in the element's own tag semantics so nothing is lost
+    // (e.g. a <b> with underline styling must stay bold too)
+    let makeBold = isBold || isLarge || el.tagName === "B";
+    let makeUnderline = isUnderline || el.tagName === "U";
+
+    // Move (not clone) the children, so nested styled elements
+    // stay in the querySelectorAll list and still get processed
+    let content = document.createDocumentFragment();
+    while (el.firstChild) content.appendChild(el.firstChild);
+
+    let replacement = content;
+    if (makeUnderline) {
+      let u = document.createElement("u");
+      u.appendChild(replacement);
+      replacement = u;
+    }
+    if (makeBold) {
+      let b = document.createElement("b");
+      b.appendChild(replacement);
+      replacement = b;
+    }
+    el.replaceWith(replacement);
+  });
+
+  // ✅ STEP 3: Remove Word junk (unchanged)
+  clone.innerHTML = clone.innerHTML
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/\s?class="[^"]*"/gi, "")
+    .replace(/\s?style="[^"]*"/gi, "")
+    .replace(/\s?lang="[^"]*"/gi, "");
+
+  // ✅ STEP 3.5: Wrap loose top-level text/inline nodes in a <div>
+  // When typing directly into a contenteditable, the browser leaves the
+  // first line as a bare text node (no wrapper) and only wraps subsequent
+  // lines in <div>s. Step 4 only captures block elements, so that leading
+  // text would otherwise be silently dropped.
+  {
+    const blockSelector = "p, div, h1, h2, h3, h4, h5, h6, li";
+    let wrapper = null;
+
+    Array.from(clone.childNodes).forEach(node => {
+      const isBlock =
+        node.nodeType === 1 &&
+        (node.matches(blockSelector) || node.querySelector(blockSelector) !== null);
+
+      if (isBlock) {
+        // Block element: leave in place, close any open wrapper
+        wrapper = null;
+      } else if (node.nodeType === 1 && node.tagName === "BR") {
+        // Top-level <br> acts as a line separator between loose runs
+        node.remove();
+        wrapper = null;
+      } else {
+        // Loose text/inline node: move into a wrapper <div>
+        if (!wrapper) {
+          wrapper = document.createElement("div");
+          clone.insertBefore(wrapper, node);
+        }
+        wrapper.appendChild(node);
+      }
+    });
+  }
+
+  // ✅ STEP 4: Capture block elements
+  let paragraphs = [];
+
+  clone.querySelectorAll("p, div, h1, h2, h3, h4, h5, h6, li").forEach(el => {
+    let html = el.innerHTML;
+
+    // ✅ Bulleted list items get a "• " prefix
+    if (el.tagName === "LI") {
+      let list = el.closest("ul, ol");
+      if (list && list.tagName === "UL") {
+        html = "• " + html;
+      }
+    }
+
+    paragraphs.push(html);
+  });
+
+  if (paragraphs.length === 0) {
+    paragraphs = [clone.innerHTML];
+  }
+
+  // ✅ STEP 5: Clean content (MINIMAL FIX APPLIED HERE)
+  paragraphs = paragraphs.map(html => {
+
+    html = html
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\t+/g, " ")
+
+      // ✅ CRITICAL FIX: preserve spacing when removing tags
+      // (keeps <b>, <u> and <a> — everything else becomes a space)
+      .replace(/<(?!\/?b\b)(?!\/?u\b)(?!\/?a\b)[^>]*>/gi, " ")
+
+      .replace(/\s+/g, " ")
+      .trim();
+
+    // ✅ Fix broken spacing after numbering (left-aligned lists)
+    html = html.replace(/^(\d+\.)(\S)/, "$1 $2");
+    html = html.replace(/^([ivxlcdm]+\.)(\S)/i, "$1 $2");
+    html = html.replace(/^([a-z]\.)(\S)/i, "$1 $2");
+
+    // ✅ Fix spacing consistency
+    html = html
+      .replace(/^(\d+\.)\s+/g, "$1 ")
+      .replace(/^([ivxlcdm]+\.)\s+/i, "$1 ")
+      .replace(/^([a-z]\.)\s+/i, "$1 ");
+
+    let temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    // ✅ Auto-link bare URLs and emails — skipped when the paragraph
+    // already contains a real <a> link (avoids double-linking)
+    if (!temp.querySelector("a")) {
+      html = html.replace(
+        /(https?:\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g,
+        (match) => {
+          // Don't swallow trailing punctuation into the link
+          let trail = "";
+          let t = match.match(/[.,;:!?)]+$/);
+          if (t) {
+            trail = t[0];
+            match = match.slice(0, match.length - trail.length);
+          }
+          if (match.includes("@")) {
+            return `<a href="mailto:${match}">${match}</a>` + trail;
+          }
+          let href = match.startsWith("http") ? match : "https://" + match;
+          return `<a href="${href}">${match}</a>` + trail;
+        }
+      );
+      temp.innerHTML = html;
+    }
+
+    let text = temp.innerText.trim();
+    let boldEl = temp.querySelector("b");
+    let hasInline = temp.querySelector("u, a") !== null;
+
+    // ✅ Preserve inline bold
+    if (boldEl) {
+      return temp.innerHTML;
+    }
+
+    // ✅ Prevent lists (numbered or bulleted) from becoming headings
+    let isList = /^(•|\d+\.|[ivxlcdm]+\.|[a-z]\.)/i.test(text);
+    if (isList) {
+      return hasInline ? temp.innerHTML : text;
+    }
+
+    // ✅ Heading detection (unchanged logic, safer condition)
+    // — skipped when the line contains underline or links, so
+    //   underlined short lines keep their underline as-is
+    let isShort = text.length < 50;
+    let wordCount = text.split(" ").length <= 6;
+    let noPunctuation = !/[.?:;]$/.test(text);
+    let notNumbered = !/^(\d+|[ivxlcdm]+|[a-z])[.)]/i.test(text);
+    let isSinglePhrase = !text.includes(",");
+
+    if (isShort && wordCount && noPunctuation && notNumbered && isSinglePhrase && !hasInline) {
+      return "<b>" + text + "</b>";
+    }
+
+    return hasInline ? temp.innerHTML : text;
+  });
+
+  // ✅ STEP 6: Remove empty paragraphs
+  paragraphs = paragraphs.filter(p => {
+    let text = p.replace(/<[^>]+>/g, "").trim();
+    return text.length > 0;
+  });
+
+  // ✅ STEP 6.5: Move spaces out of formatting tags, then collapse + trim.
+  // Tag-stripping replaces removed tags with spaces, which can land INSIDE
+  // <b>/<u>/<a> (e.g. <b><span>Ref</span></b> → <b> Ref</b>). Under
+  // white-space: pre-wrap that renders as a visible indent, and a string
+  // .trim() can't see it. Loop until stable so nested tags fully unwind
+  // (<b><u> x</u></b> needs two passes).
+  paragraphs = paragraphs.map(p => {
+    let prev;
+    do {
+      prev = p;
+      p = p
+        .replace(/(<(?:b|u|a)(?:\s[^>]*)?>)\s+/gi, " $1")   // space after opening tag → before it
+        .replace(/\s+(<\/(?:b|u|a)>)/gi, "$1 ")             // space before closing tag → after it
+        .replace(/<(b|u|a)(?:\s[^>]*)?>\s*<\/\1>/gi, " ");  // drop now-empty formatting tags
+    } while (p !== prev);
+
+    return p.replace(/\s+/g, " ").trim();
+  });
+
+  // ✅ STEP 7: Build output (UNCHANGED)
+  let finalHTML = "";
+
+  paragraphs.forEach(p => {
+    finalHTML += `<div style="margin-bottom:1em;">${p}</div>`;
+  });
+
+  output.innerHTML = finalHTML;
+
+  // ✅ Font fix
+  output.style.cssText = "font-family: Arial, sans-serif; font-size: 14.7pt;";
+
+  updateCounts();
+}
+
+function copyOutput() {
+
+  let range = document.createRange();
+  range.selectNodeContents(output);
+
+  let selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  document.execCommand("copy");
+  selection.removeAllRanges();
+
+  // Visual feedback restyled to match the design (was: alert("Copied!"))
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+</script>
+
+</body>
+</html>

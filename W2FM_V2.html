@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W2FM - OMAR.KARIM@JUSTICE.GOV.UK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:         #0B1220;
+    --bg:           #F2F5FA;
+    --surface:      #FFFFFF;
+    --surface2:     #F7F9FC;
+    --border:       #E2E7F0;
+    --border-strong:#CBD4E1;
+    --blue:         #1D4ED8;
+    --blue-dark:    #1E40AF;
+    --blue-tint:    #EAF0FE;
+    --green:        #16A34A;
+    --green-deep:   #15803D;
+    --green-tint:   #E9F7EE;
+    --amber:        #B45309;
+    --amber-mid:    #D97706;
+    --amber-tint:   #FDF3E0;
+    --red:          #DC2626;
+    --violet:       #7C3AED;
+    --text:         #131C2B;
+    --subtle:       #4C5B6E;
+    --muted:        #8492A6;
+    --white:        #FFFFFF;
+
+    /* ── Analysis add-on: category colours (unchanged) ── */
+    --cat-qlr:         #DC2626;
+    --cat-interpreter: #D97706;
+    --cat-hearing:     #059669;
+    --cat-finalorder:  #2563EB;
+    --cat-service:     #7C3AED;
+
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(13, 23, 41, 0.05), 0 1px 3px rgba(13, 23, 41, 0.04);
+  }
+
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Public Sans', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 72px 0 56px;
+  }
+
+  button { font-family: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  svg { display: block; }
+
+  /* ── Info dot ── */
+  .info {
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    border: 1.3px solid var(--muted);
+    color: var(--muted);
+    font-size: 9.5px;
+    font-weight: 700;
+    font-style: normal;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: default;
+    user-select: none;
+  }
+
+  /* ═══════════ Top bar ═══════════ */
+  .topbar {
+    height: 72px;
+    background: var(--navy);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 22px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-crest { width: 40px; height: 40px; color: var(--white); flex-shrink: 0; }
+  .brand-name { font-size: 16.5px; font-weight: 800; letter-spacing: -0.2px; line-height: 1.25; }
+  .brand-tag { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.55); line-height: 1.25; }
+
+  .privacy-note { display: flex; align-items: center; gap: 10px; margin-left: 26px; }
+  .privacy-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    border: 1.5px solid rgba(255,255,255,0.85);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .privacy-icon svg { width: 17px; height: 17px; }
+  .privacy-text b { display: block; font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .privacy-text span { display: block; font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.3; }
+
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+  .badge-staging {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--violet);
+    background: var(--white);
+    padding: 5px 12px;
+    border-radius: 8px;
+  }
+
+  .version-text { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); }
+
+  .topbar-divider { width: 1px; height: 30px; background: rgba(255,255,255,0.16); flex-shrink: 0; }
+
+  .session { display: flex; align-items: center; gap: 10px; }
+  .session svg { width: 22px; height: 22px; color: var(--white); }
+  .session-text b { display: block; font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .session-text span {
+    font-size: 12px; color: rgba(255,255,255,0.55);
+    display: inline-flex; align-items: center; gap: 5px; line-height: 1.3;
+  }
+  .session-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; display: inline-block; }
+
+  .help {
+    display: flex; align-items: center; gap: 7px;
+    background: none; border: none; color: var(--white);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .help-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.85);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+
+  /* ═══════════ Page head ═══════════ */
+  .page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px 18px;
+    flex-wrap: wrap;
+  }
+
+  .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.25; }
+  .page-sub { font-size: 13.5px; color: var(--subtle); margin-top: 3px; }
+  .page-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+  /* ═══════════ Buttons ═══════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    letter-spacing: -0.1px;
+    white-space: nowrap;
+  }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .btn-primary { background: var(--blue); color: var(--white); }
+  .btn-primary:hover { background: var(--blue-dark); }
+
+  .btn-outline {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow);
+  }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+
+  .btn-block { width: 100%; }
+  .btn-sm { padding: 8px 13px; font-size: 12.5px; }
+
+  .link-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--blue); font-size: 12.5px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .link-btn:hover { color: var(--blue-dark); text-decoration: underline; }
+  .link-btn svg { width: 13px; height: 13px; }
+
+  /* ═══════════ Layout grid ═══════════ */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 292px;
+    gap: 22px;
+    align-items: stretch;
+    padding: 0 24px 28px;
+  }
+
+  /* ═══════════ Cards ═══════════ */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+  }
+  .card-hint { font-size: 12.5px; color: var(--subtle); margin: 3px 0 14px; }
+
+  /* ═══════════ 1 · Source document ═══════════ */
+  .source-actions { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+
+  .dropzone {
+    position: relative;
+    flex: 1;
+    min-height: 320px;
+    /* Cap the pane so long documents scroll inside it rather than
+       stretching the card (and the whole page) to fit the content */
+    max-height: 60vh;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 10px;
+    display: flex;
+    overflow: hidden;
+  }
+  .dropzone:focus-within { border-color: var(--blue); border-style: solid; }
+
+  .editor {
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    outline: none;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .editor::-webkit-scrollbar { width: 6px; }
+  .editor::-webkit-scrollbar-track { background: var(--surface2); border-radius: 3px; }
+  .editor::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  .drop-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 4px;
+    padding: 24px;
+    pointer-events: none;
+    color: var(--subtle);
+  }
+  .drop-overlay.hidden { display: none; }
+  .drop-overlay svg { width: 42px; height: 42px; color: var(--muted); margin-bottom: 10px; }
+  .drop-overlay b { font-size: 15px; font-weight: 800; color: var(--text); }
+  .drop-overlay p { font-size: 12.5px; max-width: 260px; line-height: 1.5; }
+  .drop-overlay p.dim { color: var(--muted); margin-top: 8px; }
+
+  .source-stats {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 12px;
+  }
+  .stat {
+    padding: 9px 12px;
+    border-left: 1px solid var(--border);
+    min-width: 0;
+  }
+  .stat:first-child { border-left: none; display: flex; align-items: center; gap: 8px; }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 600; line-height: 1.3; }
+  .stat-value { font-size: 13.5px; font-weight: 800; line-height: 1.4; }
+  .stat-w {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    background: var(--blue);
+    color: var(--white);
+    font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .stat-word-text { font-size: 11px; color: var(--subtle); font-weight: 600; line-height: 1.35; }
+
+  /* ── Saved documents add-on: optional .docx insert panel ── */
+  .saved-docs {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px 13px;
+    margin-top: 12px;
+  }
+  .saved-docs-head { display: flex; align-items: center; gap: 8px; }
+  .saved-docs-title { font-size: 12.8px; font-weight: 800; letter-spacing: -0.1px; }
+  .saved-docs-head .link-btn { margin-left: auto; }
+  .saved-docs-hint { font-size: 11.8px; color: var(--muted); margin: 3px 0 10px; line-height: 1.45; }
+  .saved-docs-row { display: flex; gap: 8px; }
+  .saved-docs-row + .saved-docs-row { margin-top: 8px; }
+  .saved-select {
+    flex: 1;
+    min-width: 0;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+  }
+  .saved-select:disabled { color: var(--muted); cursor: default; }
+
+  /* ═══════════ 2 · Prepare for Surge ═══════════ */
+  .prepare-card { position: relative; }
+
+  .connector {
+    position: absolute;
+    top: 46%;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(13,23,41,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--subtle);
+    z-index: 5;
+  }
+  .connector svg { width: 14px; height: 14px; }
+  .connector-left  { left: -29px; }
+  .connector-right { right: -29px; }
+
+  .checklist-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 14px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.8px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .check-icon {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .check-icon svg { width: 10px; height: 10px; }
+  .check-done   { background: var(--green); color: var(--white); }
+  .check-review { background: var(--amber-mid); color: var(--white); }
+
+  .score-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px 14px;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .score-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--green-deep);
+    margin-bottom: 10px;
+  }
+  .score-head .check-icon { background: var(--green); color: var(--white); }
+  .score-box.waiting .score-head { color: var(--subtle); }
+  .score-box.waiting .score-head .check-icon { background: var(--border-strong); }
+
+  .score-label { font-size: 12.5px; color: var(--subtle); font-weight: 600; }
+  .score-value {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+  .score-box.waiting .score-value { color: var(--border-strong); }
+  .score-note {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--amber);
+    background: none; border: none; cursor: pointer;
+  }
+  .score-note:hover { text-decoration: underline; }
+  .score-note.ok { color: var(--green-deep); cursor: default; }
+  .score-note.ok:hover { text-decoration: none; }
+  .score-box.waiting .score-note { color: var(--muted); cursor: default; }
+
+  .prepare-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 14px;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  /* ═══════════ 3 · Surge-ready output ═══════════ */
+  .tabs {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .tab {
+    background: none; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 700;
+    color: var(--subtle);
+    padding: 6px 2px 10px;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  .pane-wrap {
+    flex: 1;
+    min-height: 340px;
+    /* Same cap as the source pane — long output scrolls in place */
+    max-height: 60vh;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    display: flex;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .pane { display: none; flex: 1; min-width: 0; }
+  .pane.active { display: flex; }
+
+  #output b { font-weight: bold; }
+  #output a { color: var(--blue); text-decoration: underline; }
+  #output a:hover { color: var(--blue-dark); }
+  #output u { text-decoration: underline; }
+  #output:empty::before {
+    content: attr(data-placeholder);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  #output:focus { box-shadow: inset 0 0 0 2px rgba(29, 78, 216, 0.25); }
+
+  .pane-static {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    color: var(--text);
+  }
+
+  .changes-list { list-style: none; display: flex; flex-direction: column; gap: 10px; font-family: 'Public Sans', sans-serif; white-space: normal; }
+  .changes-list li { display: flex; gap: 9px; align-items: flex-start; font-size: 12.8px; line-height: 1.45; }
+  .changes-list .check-icon { margin-top: 1px; }
+
+  .output-actions { display: flex; gap: 10px; }
+  .output-foot { display: flex; justify-content: flex-end; margin-top: 12px; }
+
+  /* ── Analysis add-on: inline highlights (unchanged classes) ── */
+  .hl { border-radius: 3px; padding: 1px 2px; cursor: pointer; font-weight: 500; }
+  .hl-qlr         { background: rgba(220,38,38,0.12);  color: #B91C1C; border-bottom: 1px solid rgba(220,38,38,0.4); }
+  .hl-interpreter { background: rgba(217,119,6,0.12);  color: #B45309; border-bottom: 1px solid rgba(217,119,6,0.4); }
+  .hl-hearing     { background: rgba(5,150,105,0.12);  color: #047857; border-bottom: 1px solid rgba(5,150,105,0.4); }
+  .hl-finalorder  { background: rgba(37,99,235,0.12);  color: #1D4ED8; border-bottom: 1px solid rgba(37,99,235,0.4); }
+  .hl-service     { background: rgba(124,58,237,0.12); color: #6D28D9; border-bottom: 1px solid rgba(124,58,237,0.4); }
+
+  /* ═══════════ Order review sidebar ═══════════ */
+  .sidebar {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 4px;
+  }
+  .sidebar-title { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+  .sidebar-title small { font-size: 12px; font-weight: 500; color: var(--muted); }
+
+  .collapse-btn {
+    margin-left: auto;
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    border: none;
+    background: none;
+    color: var(--subtle);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .collapse-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .sidebar-hint { font-size: 12.5px; color: var(--subtle); line-height: 1.55; padding: 8px 0 4px; }
+  .sidebar.open .sidebar-hint { display: none; }
+
+  .sidebar-content { display: none; }
+  .sidebar.open .sidebar-content { display: block; }
+
+  .findings-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+
+  .review-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: 13px 14px;
+    transition: opacity 0.15s;
+  }
+  .review-item.inactive { opacity: 0.45; }
+
+  .review-item-title {
+    font-size: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  .cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .cat-qlr .cat-dot         { background: var(--cat-qlr); }
+  .cat-interpreter .cat-dot { background: var(--cat-interpreter); }
+  .cat-hearing .cat-dot     { background: var(--cat-hearing); }
+  .cat-finalorder .cat-dot  { background: var(--cat-finalorder); }
+  .cat-service .cat-dot     { background: var(--cat-service); }
+
+  .review-item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12.5px;
+    margin-bottom: 7px;
+  }
+  .detected-label { color: var(--subtle); font-weight: 600; padding-top: 1px; }
+
+  .detected-badge {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 9px;
+    border-radius: 6px;
+  }
+  .badge-yes { background: var(--green-tint); color: var(--green-deep); }
+  .badge-no  { background: var(--surface2); color: var(--subtle); border: 1px solid var(--border); }
+  .badge-tbd { background: var(--amber-tint); color: var(--amber); }
+
+  .detected-value { color: var(--blue); font-weight: 700; line-height: 1.35; min-width: 0; }
+
+  .reviewed {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--subtle);
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    padding-top: 1px;
+  }
+  .reviewed input { accent-color: var(--blue); width: 14px; height: 14px; cursor: pointer; }
+
+  .review-item-action { font-size: 11.8px; color: var(--subtle); line-height: 1.45; margin-bottom: 7px; }
+  .review-item-source { font-size: 11.5px; color: var(--muted); }
+
+  .no-findings { padding: 16px 6px; text-align: center; color: var(--muted); font-size: 12.5px; }
+
+  .sidebar-foot { margin-top: 14px; }
+
+  /* ═══════════ Review table + summary ═══════════ */
+  .review-card { grid-column: 1 / 3; }
+  .summary-card { grid-column: 3; }
+
+  .review-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .review-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 6px 8px 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .review-table td {
+    padding: 11px 8px 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.8px;
+    vertical-align: top;
+  }
+  .review-table tr:last-child td { border-bottom: none; }
+  .review-table .col-issue { width: 150px; }
+  .review-table .col-action { width: 190px; }
+
+  .issue-cell { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .row-icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .row-icon-warn { color: var(--amber-mid); }
+  .row-icon-info { color: var(--blue); }
+  .row-icon-removed { color: var(--red); }
+
+  .review-empty { padding: 18px 0 6px; color: var(--muted); font-size: 12.8px; }
+
+  .summary-rows { display: flex; flex-direction: column; margin-top: 6px; }
+  .summary-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .summary-count { margin-left: auto; font-weight: 800; font-size: 13.5px; }
+  .sum-pass svg { color: var(--green); }
+  .sum-warn svg { color: var(--amber-mid); }
+  .sum-removed svg { color: var(--red); }
+  .sum-info svg { color: var(--blue); }
+
+  /* ═══════════ Footer ═══════════ */
+  .statusbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 44px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--subtle);
+    z-index: 40;
+  }
+  .status-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .status-sep { color: var(--border-strong); padding: 0 4px; }
+  .status-live { color: var(--blue); font-weight: 700; }
+  .status-live:empty { display: none; }
+  .statusbar-right { margin-left: auto; display: flex; gap: 22px; color: var(--subtle); white-space: nowrap; }
+  .statusbar-right b { font-weight: 700; color: var(--text); }
+
+  /* ═══════════ Toast ═══════════ */
+  .toast {
+    position: fixed;
+    bottom: 58px;
+    right: 24px;
+    background: var(--navy);
+    color: var(--white);
+    padding: 11px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    box-shadow: 0 6px 20px rgba(11,18,32,0.3);
+    z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-icon { color: #4ADE80; }
+
+  /* ═══════════ Responsive ═══════════ */
+  @media (max-width: 1320px) {
+    .layout { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+    .sidebar { grid-column: 1 / -1; grid-row: auto; }
+    .review-card { grid-column: 1 / -1; }
+    .summary-card { grid-column: 1 / -1; }
+    .connector { display: none; }
+    .findings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0,1fr); }
+    .privacy-note, .session, .version-text, .topbar-divider { display: none; }
+    .page-head { flex-direction: column; align-items: flex-start; }
+    .statusbar { position: static; height: auto; padding: 12px 24px; flex-wrap: wrap; }
+    .statusbar-right { margin-left: 0; flex-wrap: wrap; gap: 12px; }
+    body { padding-bottom: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    
+    <div>
+      <div class="brand-name">W2FM - OMAR.KARIM@JUSTICE.GOV.UK</div>
+      <div class="brand-tag">DEMO BY OMAR KARIM</div>
+    </div>
+  </div>
+
+  <div class="privacy-note">
+    <div class="privacy-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3 L4 6 v5 c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10 V6 Z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+    </div>
+    <div class="privacy-text">
+      <b>Runs locally in your browser</b>
+      <span>No document data is uploaded or stored</span>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <span class="badge-staging">Staging</span>
+    <span class="version-text">v0.9.4</span>
+    <div class="topbar-divider"></div>
+    <div class="session">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>
+      </svg>
+      <div class="session-text">
+        <b>Local session</b>
+        <span><span class="session-dot"></span>This device only</span>
+      </div>
+    </div>
+    <div class="topbar-divider"></div>
+    <button class="help" title="Help documentation">
+      <span class="help-icon">?</span> Help
+    </button>
+  </div>
+</header>
+
+<div class="toast" id="toast" role="status">
+  <span class="toast-icon">✓</span>
+  <span>Copied!</span>
+</div>
+
+<div class="page-head">
+  <div>
+    <h1 class="page-title">Word-formatted orders to FM-compatible text.</h1>
+    <p class="page-sub">Paste from Word (Desktop). Review output before pasting into FM.</p>
+  </div>
+  <div class="page-actions">
+    <button class="btn btn-outline" onclick="loadSample()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      Load test order
+    </button>
+    <button class="btn btn-outline" onclick="clearAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      Start new document
+    </button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ═══ 1 · Source document ═══ -->
+  <section class="card" aria-label="Source document">
+    <div class="card-title"><span>1.&nbsp; Source document</span><i class="info" title="Paste the order to be converted">i</i></div>
+    <p class="card-hint">Paste from Word, Outlook or another approved source.</p>
+
+    <div class="source-actions">
+      <button class="btn btn-outline btn-sm" onclick="pasteFromClipboard()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        Paste from clipboard
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="clearInput()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Clear
+      </button>
+    </div>
+
+    <div class="dropzone">
+      <div id="input" class="editor" contenteditable="true" aria-label="Source document content"></div>
+      <div class="drop-overlay" id="dropOverlay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+        <b>Paste the order here</b>
+        <p>Formatting, numbering, tables and hyperlinks will be checked before conversion.</p>
+        <p class="dim">Supports Word Online, Word Desktop, Outlook and other text sources.</p>
+      </div>
+    </div>
+    <span class="sr-only" id="inputCount" aria-live="polite">Characters: 0</span>
+
+    <div class="source-stats">
+      <div class="stat">
+        <span class="stat-w">W</span>
+        <span class="stat-word-text" id="statWord">No Word formatting detected</span>
+      </div>
+      <div class="stat"><div class="stat-label">Tables</div><div class="stat-value" id="statTables">0</div></div>
+      <div class="stat"><div class="stat-label">Lists</div><div class="stat-value" id="statLists">0</div></div>
+      <div class="stat"><div class="stat-label">Links</div><div class="stat-value" id="statLinks">0</div></div>
+      <div class="stat"><div class="stat-label">Words</div><div class="stat-value" id="statWords">0</div></div>
+    </div>
+
+    <!-- ── Saved documents add-on (optional) ── -->
+    <div class="saved-docs" aria-label="Insert saved Word document">
+      <div class="saved-docs-head">
+        <span class="saved-docs-title">Insert saved Word document</span>
+        <i class="info" title="Optional: load saved .docx files, then insert one into the source area">i</i>
+        <button class="link-btn" onclick="docLibraryInput.click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add .docx
+        </button>
+        <input type="file" id="docLibraryInput" accept=".docx" multiple hidden onchange="addSavedDocs(this.files)">
+      </div>
+      <p class="saved-docs-hint">Documents are read on this device only and kept for this session. Inserted content is cleaned together with anything already in the source area.</p>
+      <div class="saved-docs-row">
+        <select class="saved-select" id="savedDocSelect" aria-label="Saved Word document to insert" disabled>
+          <option value="">No saved documents yet</option>
+        </select>
+      </div>
+      <div class="saved-docs-row">
+        <select class="saved-select" id="insertModeSelect" aria-label="How to insert the document">
+          <option value="replace">Replace existing content</option>
+          <option value="append">Add to the bottom</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="insertSavedDoc()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          Insert
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2 · Prepare for Surge ═══ -->
+  <section class="card prepare-card" aria-label="Prepare for Surge">
+    <div class="connector connector-left" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+    </div>
+    <div class="connector connector-right" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+    </div>
+
+    <div class="card-title"><span>2.&nbsp; Prepare for FM</span><i class="info" title="Formats and validates the pasted order">i</i></div>
+    <p class="card-hint">We'll format, clean and validate for the legacy editor.</p>
+
+    <div class="checklist-box">
+      <div class="check-item">
+        <span class="check-icon check-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+        Preserve headings and emphasis
+      </div>
+      <div class="check-item">
+        <span class="check-icon check-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+        Convert unsupported formatting
+      </div>
+      <div class="check-item">
+        <span class="check-icon check-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+        Standardise paragraph spacing
+      </div>
+      <div class="check-item">
+        <span class="check-icon check-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+        Repair numbering and bullets
+      </div>
+      <div class="check-item">
+        <span class="check-icon check-review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        Handle tables and alignment
+      </div>
+      <div class="check-item">
+        <span class="check-icon check-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+        Retain hyperlinks as text
+      </div>
+      <div class="check-item">
+        <span class="check-icon check-review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        Flag content requiring review
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" onclick="cleanContent()">Prepare document</button>
+
+    <div class="score-box waiting" id="scoreBox">
+      <div class="score-head">
+        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+        <span id="scoreHeadText">Awaiting document</span>
+      </div>
+      <div class="score-label">Compatibility score</div>
+      <div class="score-value" id="scoreValue">—</div>
+      <button class="score-note" id="scoreNote" onclick="scrollToReview()">Prepare a document to run checks</button>
+    </div>
+
+    <div class="prepare-foot">
+      <span id="processedAt">Not yet processed</span>
+      <button class="link-btn" onclick="scrollToReview()">View details
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ 3 · Surge-ready output ═══ -->
+  <section class="card" aria-label="Surge-ready output">
+    <div class="card-title"><span>3.&nbsp; FM-ready output</span><i class="info" title="The converted, Surge-compatible text">i</i></div>
+    <p class="card-hint">Ready to copy into the legacy editor (FM).</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" id="tabFormatted" role="tab" onclick="switchTab('formatted')">Formatted output</button>
+      <button class="tab" id="tabPreview" role="tab" onclick="switchTab('preview')">Compatibility preview</button>
+      <button class="tab" id="tabChanges" role="tab" onclick="switchTab('changes')">Changes made</button>
+    </div>
+
+    <div class="pane-wrap">
+      <div class="pane active" id="paneFormatted" role="tabpanel">
+        <div id="output" class="editor" contenteditable="true" aria-label="Surge-ready output"
+             data-placeholder="Prepared output will appear here…"></div>
+      </div>
+      <div class="pane" id="panePreview" role="tabpanel">
+        <div class="pane-static" id="previewText">Prepare a document to see the plain-text compatibility preview.</div>
+      </div>
+      <div class="pane" id="paneChanges" role="tabpanel">
+        <div class="pane-static"><ul class="changes-list" id="changesList"><li>Prepare a document to see the changes made during conversion.</li></ul></div>
+      </div>
+    </div>
+    <span class="sr-only" id="outputCount" aria-live="polite">Characters: 0</span>
+
+    <div class="output-actions">
+      <button class="btn btn-primary" onclick="copySurge()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy Surge-ready text
+      </button>
+      <button class="btn btn-outline" onclick="downloadReview()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        Download review copy
+      </button>
+    </div>
+    <div class="output-foot">
+      <button class="link-btn" onclick="clearAll()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Start new document
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ Order review sidebar (analysis add-on) ═══ -->
+  <aside class="sidebar" id="analysisPanel" aria-label="Order review">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Order review <small>(extracted)</small></span>
+      <i class="info" title="Key terms extracted from the prepared output">i</i>
+      <button class="collapse-btn" id="analyseBtn" onclick="toggleAnalysis()" aria-label="Expand or collapse order review">∨</button>
+    </div>
+    <span class="sr-only" id="analysisCount" aria-live="polite">0 terms found</span>
+
+    <p class="sidebar-hint">Prepare a document, then expand this panel to extract and highlight key terms — QLR, interpreter, next hearing, final order and service.</p>
+
+    <div class="sidebar-content">
+      <div class="findings-grid" id="findingsGrid">
+        <div class="no-findings">Prepare a document to extract key terms</div>
+      </div>
+    </div>
+
+    <div class="sidebar-foot">
+      <button class="btn btn-outline btn-block btn-sm" onclick="viewAllDetails()">View all extracted details
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ Review required ═══ -->
+  <section class="card review-card" id="reviewCard" aria-label="Review required">
+    <div class="card-title"><span id="reviewTitle">Review required — 0 items</span><i class="info" title="Items changed during conversion that should be checked">i</i></div>
+    <div id="reviewEmpty" class="review-empty">No review items yet. Prepare a document to run compatibility checks.</div>
+    <table class="review-table" id="reviewTable" style="display:none">
+      <thead>
+        <tr>
+          <th class="col-issue">Issue</th>
+          <th>What happened</th>
+          <th class="col-action">Action</th>
+        </tr>
+      </thead>
+      <tbody id="reviewRows"></tbody>
+    </table>
+  </section>
+
+  <!-- ═══ Compatibility summary ═══ -->
+  <section class="card summary-card" aria-label="Compatibility summary">
+    <div class="card-title"><span>Compatibility summary</span></div>
+    <div class="summary-rows">
+      <div class="summary-row sum-pass">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>
+        Passed <span class="summary-count" id="sumPassed">0</span>
+      </div>
+      <div class="summary-row sum-warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4M12 17.5v.5"/></svg>
+        Needs review <span class="summary-count" id="sumReview">0</span>
+      </div>
+      <div class="summary-row sum-removed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        Unsupported / removed <span class="summary-count" id="sumRemoved">0</span>
+      </div>
+      <div class="summary-row sum-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>
+        Informational <span class="summary-count" id="sumInfo">0</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="statusbar">
+  <span class="status-item">Runs locally in your browser</span>
+  <span class="status-sep">·</span>
+  <span class="status-item">No document content is uploaded or stored</span>
+  <span class="status-sep">·</span>
+  <span class="status-item">Always review final output before sending</span>
+  <span class="status-item status-live" id="statusMsg"></span>
+  <div class="statusbar-right">
+    <span>Formatting rules: <b>v1.6.2</b></span>
+    <span>Engine: <b>v0.9.4</b></span>
+    <span>OMAR.KARIM@JUSTICE.GOV.UK © W2FM</span>
+  </div>
+</div>
+
+<script>
+
+const input = document.getElementById("input");
+const output = document.getElementById("output");
+const inputCount = document.getElementById("inputCount");
+const outputCount = document.getElementById("outputCount");
+const toast = document.getElementById("toast");
+
+// ── Analysis add-on: DOM refs ──
+const analyseBtn    = document.getElementById("analyseBtn");
+const analysisPanel = document.getElementById("analysisPanel");
+const findingsGrid  = document.getElementById("findingsGrid");
+const analysisCount = document.getElementById("analysisCount");
+const statusMsg     = document.getElementById("statusMsg");
+
+function updateCounts() {
+  inputCount.innerText = "Characters: " + input.innerText.length;
+  outputCount.innerText = "Characters: " + output.innerText.length;
+}
+
+input.addEventListener("input", updateCounts);
+output.addEventListener("input", updateCounts);
+
+function cleanContent() {
+
+  let clone = input.cloneNode(true);
+
+  // ✅ STEP 1: Convert <strong> → <b>
+  clone.querySelectorAll("strong").forEach(el => {
+    let b = document.createElement("b");
+    b.innerHTML = el.innerHTML;
+    el.replaceWith(b);
+  });
+
+  // ✅ STEP 1.5: Unwrap internal bookmark links (Word TOC / cross-references)
+  // Word marks headings referenced by a table of contents or cross-reference
+  // as anchors like <a href="#_Toc45678">. These aren't real hyperlinks, but
+  // Step 5 preserves every <a>, so they rendered blue + underlined in the
+  // output. Only links that actually go somewhere (http/https, mailto, www.)
+  // are kept — everything else is unwrapped to plain content, and the
+  // hyperlink's underline decoration is removed along with it.
+  clone.querySelectorAll("a").forEach(a => {
+    const href = (a.getAttribute("href") || "").trim();
+    const isRealLink = /^(https?:|mailto:|www\.)/i.test(href);
+    if (isRealLink) return;
+
+    // The underline belongs to the link styling, not the text itself
+    a.querySelectorAll("[style]").forEach(el => {
+      el.setAttribute("style",
+        (el.getAttribute("style") || "").replace(/text-decoration[^;"]*(;|$)/gi, ""));
+    });
+    a.querySelectorAll("u").forEach(u => {
+      const f = document.createDocumentFragment();
+      while (u.firstChild) f.appendChild(u.firstChild);
+      u.replaceWith(f);
+    });
+
+    const frag = document.createDocumentFragment();
+    while (a.firstChild) frag.appendChild(a.firstChild);
+    a.replaceWith(frag);
+  });
+
+  // ✅ STEP 2: Convert inline styling → <b> / <u>
+  clone.querySelectorAll("*").forEach(el => {
+    if (el.tagName === "A") return; // never unwrap links
+
+    let style = el.getAttribute("style") || "";
+    let isBold = /font-weight\s*:\s*(bold|600|700)/i.test(style);
+    let isLarge = /font-size\s*:\s*(1[5-9]|[2-9]\d)pt/i.test(style);
+    let isUnderline = /text-decoration[^:;"]*:[^;"]*underline/i.test(style);
+
+    if (!isBold && !isLarge && !isUnderline) return;
+
+    // Fold in the element's own tag semantics so nothing is lost
+    // (e.g. a <b> with underline styling must stay bold too)
+    let makeBold = isBold || isLarge || el.tagName === "B";
+    let makeUnderline = isUnderline || el.tagName === "U";
+
+    // Move (not clone) the children, so nested styled elements
+    // stay in the querySelectorAll list and still get processed
+    let content = document.createDocumentFragment();
+    while (el.firstChild) content.appendChild(el.firstChild);
+
+    let replacement = content;
+    if (makeUnderline) {
+      let u = document.createElement("u");
+      u.appendChild(replacement);
+      replacement = u;
+    }
+    if (makeBold) {
+      let b = document.createElement("b");
+      b.appendChild(replacement);
+      replacement = b;
+    }
+    el.replaceWith(replacement);
+  });
+
+  // ✅ STEP 3: Remove Word junk (unchanged)
+  clone.innerHTML = clone.innerHTML
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/\s?class="[^"]*"/gi, "")
+    .replace(/\s?style="[^"]*"/gi, "")
+    .replace(/\s?lang="[^"]*"/gi, "");
+
+  // ✅ STEP 3.5: Wrap loose top-level text/inline nodes in a <div>
+  // When typing directly into a contenteditable, the browser leaves the
+  // first line as a bare text node (no wrapper) and only wraps subsequent
+  // lines in <div>s. Step 4 only captures block elements, so that leading
+  // text would otherwise be silently dropped.
+  {
+    const blockSelector = "p, div, h1, h2, h3, h4, h5, h6, li";
+    let wrapper = null;
+
+    Array.from(clone.childNodes).forEach(node => {
+      const isBlock =
+        node.nodeType === 1 &&
+        (node.matches(blockSelector) || node.querySelector(blockSelector) !== null);
+
+      if (isBlock) {
+        // Block element: leave in place, close any open wrapper
+        wrapper = null;
+      } else if (node.nodeType === 1 && node.tagName === "BR") {
+        // Top-level <br> acts as a line separator between loose runs
+        node.remove();
+        wrapper = null;
+      } else {
+        // Loose text/inline node: move into a wrapper <div>
+        if (!wrapper) {
+          wrapper = document.createElement("div");
+          clone.insertBefore(wrapper, node);
+        }
+        wrapper.appendChild(node);
+      }
+    });
+  }
+
+  // ✅ STEP 4: Capture block elements
+  let paragraphs = [];
+
+  clone.querySelectorAll("p, div, h1, h2, h3, h4, h5, h6, li").forEach(el => {
+    let html = el.innerHTML;
+
+    // ✅ Bulleted list items get a "• " prefix
+    if (el.tagName === "LI") {
+      let list = el.closest("ul, ol");
+      if (list && list.tagName === "UL") {
+        html = "• " + html;
+      }
+    }
+
+    paragraphs.push(html);
+  });
+
+  if (paragraphs.length === 0) {
+    paragraphs = [clone.innerHTML];
+  }
+
+  // ✅ STEP 5: Clean content (MINIMAL FIX APPLIED HERE)
+  paragraphs = paragraphs.map(html => {
+
+    html = html
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\t+/g, " ")
+
+      // ✅ CRITICAL FIX: preserve spacing when removing tags
+      // (keeps <b>, <u> and <a> — everything else becomes a space)
+      .replace(/<(?!\/?b\b)(?!\/?u\b)(?!\/?a\b)[^>]*>/gi, " ")
+
+      .replace(/\s+/g, " ")
+      .trim();
+
+    // ✅ Fix broken spacing after numbering (left-aligned lists)
+    html = html.replace(/^(\d+\.)(\S)/, "$1 $2");
+    html = html.replace(/^([ivxlcdm]+\.)(\S)/i, "$1 $2");
+    html = html.replace(/^([a-z]\.)(\S)/i, "$1 $2");
+
+    // ✅ Fix spacing consistency
+    html = html
+      .replace(/^(\d+\.)\s+/g, "$1 ")
+      .replace(/^([ivxlcdm]+\.)\s+/i, "$1 ")
+      .replace(/^([a-z]\.)\s+/i, "$1 ");
+
+    let temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    // ✅ Auto-link bare URLs and emails — skipped when the paragraph
+    // already contains a real <a> link (avoids double-linking)
+    if (!temp.querySelector("a")) {
+      html = html.replace(
+        /(https?:\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g,
+        (match) => {
+          // Don't swallow trailing punctuation into the link
+          let trail = "";
+          let t = match.match(/[.,;:!?)]+$/);
+          if (t) {
+            trail = t[0];
+            match = match.slice(0, match.length - trail.length);
+          }
+          if (match.includes("@")) {
+            return `<a href="mailto:${match}">${match}</a>` + trail;
+          }
+          let href = match.startsWith("http") ? match : "https://" + match;
+          return `<a href="${href}">${match}</a>` + trail;
+        }
+      );
+      temp.innerHTML = html;
+    }
+
+    let text = temp.innerText.trim();
+    let boldEl = temp.querySelector("b");
+    let hasInline = temp.querySelector("u, a") !== null;
+
+    // ✅ Preserve inline bold
+    if (boldEl) {
+      return temp.innerHTML;
+    }
+
+    // ✅ Prevent lists (numbered or bulleted) from becoming headings
+    let isList = /^(•|\d+\.|[ivxlcdm]+\.|[a-z]\.)/i.test(text);
+    if (isList) {
+      return hasInline ? temp.innerHTML : text;
+    }
+
+    // ✅ Heading detection (unchanged logic, safer condition)
+    // — skipped when the line contains underline or links, so
+    //   underlined short lines keep their underline as-is
+    let isShort = text.length < 50;
+    let wordCount = text.split(" ").length <= 6;
+    let noPunctuation = !/[.?:;]$/.test(text);
+    let notNumbered = !/^(\d+|[ivxlcdm]+|[a-z])[.)]/i.test(text);
+    let isSinglePhrase = !text.includes(",");
+
+    if (isShort && wordCount && noPunctuation && notNumbered && isSinglePhrase && !hasInline) {
+      return "<b>" + text + "</b>";
+    }
+
+    return hasInline ? temp.innerHTML : text;
+  });
+
+  // ✅ STEP 6: Remove empty paragraphs
+  paragraphs = paragraphs.filter(p => {
+    let text = p.replace(/<[^>]+>/g, "").trim();
+    return text.length > 0;
+  });
+
+  // ✅ STEP 6.5: Move spaces out of formatting tags, then collapse + trim.
+  // Tag-stripping replaces removed tags with spaces, which can land INSIDE
+  // <b>/<u>/<a> (e.g. <b><span>Ref</span></b> → <b> Ref</b>). Under
+  // white-space: pre-wrap that renders as a visible indent, and a string
+  // .trim() can't see it. Loop until stable so nested tags fully unwind
+  // (<b><u> x</u></b> needs two passes).
+  paragraphs = paragraphs.map(p => {
+    let prev;
+    do {
+      prev = p;
+      p = p
+        .replace(/(<(?:b|u|a)(?:\s[^>]*)?>)\s+/gi, " $1")   // space after opening tag → before it
+        .replace(/\s+(<\/(?:b|u|a)>)/gi, "$1 ")             // space before closing tag → after it
+        .replace(/<(b|u|a)(?:\s[^>]*)?>\s*<\/\1>/gi, " ");  // drop now-empty formatting tags
+    } while (p !== prev);
+
+    return p.replace(/\s+/g, " ").trim();
+  });
+
+  // ✅ STEP 7: Build output (UNCHANGED)
+  let finalHTML = "";
+
+  paragraphs.forEach(p => {
+    finalHTML += `<div style="margin-bottom:1em;">${p}</div>`;
+  });
+
+  output.innerHTML = finalHTML;
+
+  // ✅ Font fix
+  output.style.cssText = "font-family: Arial, sans-serif; font-size: 14.7pt;";
+
+  updateCounts();
+
+  // ── Presentation add-on: refresh score, review items and tabs ──
+  updateFormatStatus();
+
+  // ── Analysis add-on: refresh findings automatically if panel is open ──
+  if (analysisOpen) runAnalysis();
+}
+
+function copyOutput() {
+
+  // ── Analysis add-on: temporarily remove highlight <mark> tags so the
+  // copied content is identical to the original stable formatter output ──
+  const hadHighlights = output.querySelector("mark.hl") !== null;
+  if (hadHighlights) stripHighlights();
+
+  let range = document.createRange();
+  range.selectNodeContents(output);
+
+  let selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  document.execCommand("copy");
+  selection.removeAllRanges();
+
+  // ── Analysis add-on: restore highlights after copying ──
+  if (hadHighlights) applyHighlights();
+
+  // Visual feedback restyled to match the design (was: alert("Copied!"))
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   ANALYSIS ADD-ON
+   Everything below this line is the due-diligence analysis feature,
+   ported from analyse.html. It only reads the formatter's output —
+   it never feeds back into the cleaning pipeline.
+   ════════════════════════════════════════════════════════════════════ */
+
+// ── Keyword library ──
+// Deliberately limited: only the five specific court-order terms below
+// are detected. One term per category — nothing else is flagged.
+const KEYWORDS = [
+  { term: "QLR",          category: "qlr",         risk: "high", action: "Verify QLR details and confirm representation is in place for the hearing." },
+  { term: "interpreter",  category: "interpreter", risk: "high", action: "Confirm interpreter is booked, qualified, and language/dialect confirmed." },
+  { term: "next hearing", category: "hearing",     risk: "high", action: "Log date, time, court, and judge — diary all parties." },
+  { term: "final order",  category: "finalorder",  risk: "high", action: "Review order terms carefully — lodge, serve, and comply with all directions." },
+  { term: "service upon", category: "service",     risk: "high", action: "Confirm the correct party, address, and method of service." },
+];
+
+// ── Analysis state ──
+let analysisOpen = false;
+let activeCategories = new Set(["qlr","interpreter","hearing","finalorder","service"]);
+let currentFindings = [];
+
+// ── Toggle analysis panel ──
+function toggleAnalysis() {
+  analysisOpen = !analysisOpen;
+  analysisPanel.classList.toggle("open", analysisOpen);
+  analyseBtn.classList.toggle("active", analysisOpen);
+  analyseBtn.textContent = analysisOpen ? "∧" : "∨";
+
+  if (analysisOpen) {
+    if (output.innerText.trim()) runAnalysis();
+  } else {
+    // Closing the panel restores the output to the pristine formatter result
+    stripHighlights();
+    statusMsg.textContent = "";
+  }
+}
+
+// ── Toggle category filter ──
+function toggleCat(cat) {
+  if (activeCategories.has(cat)) {
+    activeCategories.delete(cat);
+  } else {
+    activeCategories.add(cat);
+  }
+  document.querySelector(`[data-cat="${cat}"]`).classList.toggle("inactive", !activeCategories.has(cat));
+  renderFindings();
+  applyHighlights();
+}
+
+// ── Analysis engine ──
+function runAnalysis() {
+  const text = output.innerText;
+  if (!text.trim()) {
+    findingsGrid.innerHTML = '<div class="no-findings">No output to analyse — prepare a document first</div>';
+    analysisCount.textContent = "0 terms found";
+    currentFindings = [];
+    return;
+  }
+
+  const found = new Map(); // term → keyword entry
+
+  KEYWORDS.forEach(kw => {
+    let matched = false;
+    if (kw.isRegex) {
+      const rx = new RegExp(kw.term, 'gi');
+      matched = rx.test(text);
+    } else {
+      const rx = new RegExp(`\\b${escapeRegex(kw.term)}\\b`, 'gi');
+      matched = rx.test(text);
+    }
+    if (matched && !found.has(kw.term)) {
+      found.set(kw.term, kw);
+    }
+  });
+
+  currentFindings = Array.from(found.values());
+
+  // Sort: high → medium → low, then alphabetically
+  const riskOrder = { high: 0, medium: 1, low: 2 };
+  currentFindings.sort((a, b) => {
+    const rd = riskOrder[a.risk] - riskOrder[b.risk];
+    return rd !== 0 ? rd : a.term.localeCompare(b.term);
+  });
+
+  renderFindings();
+  applyHighlights();
+
+  const n = currentFindings.length;
+  statusMsg.textContent = `Analysis complete · ${n} term${n !== 1 ? "s" : ""} flagged`;
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// ── Render findings cards ──
+// PRESENTATION REWRITE: renders the reference-style "Order review" cards
+// for all five categories (Detected badge, Reviewed checkbox, Source line).
+// Detection, category filtering and highlight logic are unchanged — this
+// function only changes how the results are displayed. Clicking a card
+// title still calls the original toggleCat().
+function renderFindings() {
+  const visible = currentFindings.filter(f => activeCategories.has(f.category));
+  analysisCount.textContent = `${visible.length} of ${currentFindings.length} terms shown`;
+
+  const detected = new Map(currentFindings.map(f => [f.category, f]));
+
+  findingsGrid.innerHTML = KEYWORDS.map(kw => {
+    const hit      = detected.get(kw.category);
+    const active   = activeCategories.has(kw.category);
+    const reviewed = reviewedCats.has(kw.category);
+    const value    = hit ? detectedValue(kw) : null;
+
+    return `
+    <div class="review-item cat-${kw.category}${active ? "" : " inactive"}" data-cat="${kw.category}">
+      <div class="review-item-title" onclick="toggleCat('${kw.category}')"
+           title="${active ? "Hide" : "Show"} highlights for ${categoryLabel(kw.category)}">
+        <span class="cat-dot"></span>${categoryLabel(kw.category)}
+      </div>
+      <div class="review-item-row">
+        <span class="detected-label">Detected:</span>
+        ${hit
+          ? (value
+              ? `<span class="detected-value">${value}</span>`
+              : `<span class="detected-badge badge-yes">Yes</span>`)
+          : `<span class="detected-badge badge-no">No</span>`}
+        <label class="reviewed" onclick="event.stopPropagation()">
+          <input type="checkbox"${reviewed ? " checked" : ""}
+                 onchange="setReviewed('${kw.category}', this.checked)"> Reviewed
+        </label>
+      </div>
+      ${hit ? `<div class="review-item-action">${hit.action}</div>` : ""}
+      <div class="review-item-source">Source: ${hit ? findSourceParagraph(kw) : "Not found"}</div>
+    </div>`;
+  }).join("");
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function categoryLabel(cat) {
+  return { qlr: "QLR", interpreter: "Interpreter", hearing: "Next Hearing",
+           finalorder: "Final Order", service: "Service Upon" }[cat] || cat;
+}
+
+// ── Remove all highlight marks (restores the exact formatter output) ──
+function stripHighlights() {
+  output.querySelectorAll("mark.hl").forEach(mark => {
+    mark.replaceWith(document.createTextNode(mark.textContent));
+  });
+  output.normalize();
+}
+
+// ── Apply inline highlights to output ──
+// Highlights are applied on TEXT NODES only (via TreeWalker) rather than
+// with innerHTML regex replacement. This guarantees the formatter's own
+// markup — <b>, <u>, <a href="…"> — is never corrupted (e.g. the keyword
+// "service" appearing inside an href attribute is left untouched).
+function applyHighlights() {
+  stripHighlights();
+
+  const active = currentFindings.filter(f => activeCategories.has(f.category));
+
+  active.forEach(f => {
+    const pattern = f.isRegex
+      ? new RegExp(f.term, 'gi')
+      : new RegExp(`\\b${escapeRegex(f.term)}\\b`, 'gi');
+    highlightTerm(pattern, f.category);
+  });
+}
+
+function highlightTerm(pattern, category) {
+  const walker = document.createTreeWalker(output, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      // Skip text already inside a highlight (longer terms win — they are
+      // applied in KEYWORDS order, and nested marks are avoided)
+      if (node.parentElement && node.parentElement.closest("mark.hl")) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  textNodes.forEach(node => {
+    const text = node.nodeValue;
+    pattern.lastIndex = 0;
+    if (!pattern.test(text)) return;
+    pattern.lastIndex = 0;
+
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    let m;
+    while ((m = pattern.exec(text)) !== null) {
+      if (m.index > last) {
+        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      const mark = document.createElement("mark");
+      mark.className = "hl hl-" + category;
+      mark.textContent = m[0];
+      frag.appendChild(mark);
+      last = m.index + m[0].length;
+      if (m[0].length === 0) pattern.lastIndex++; // safety for zero-length matches
+    }
+    if (last < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(last)));
+    }
+    node.replaceWith(frag);
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PRESENTATION ADD-ON
+   Visual/UX layer only. Everything below reads the input/output panes
+   and updates the chrome around them (stats, score, review table,
+   tabs, sidebar helpers). Nothing here feeds back into the cleaning
+   pipeline or the analysis engine.
+   ════════════════════════════════════════════════════════════════════ */
+
+// ── DOM refs ──
+const dropOverlay = document.getElementById("dropOverlay");
+const statWord    = document.getElementById("statWord");
+const statTables  = document.getElementById("statTables");
+const statLists   = document.getElementById("statLists");
+const statLinks   = document.getElementById("statLinks");
+const statWords   = document.getElementById("statWords");
+const scoreBox    = document.getElementById("scoreBox");
+const scoreHeadText = document.getElementById("scoreHeadText");
+const scoreValue  = document.getElementById("scoreValue");
+const scoreNote   = document.getElementById("scoreNote");
+const processedAt = document.getElementById("processedAt");
+const reviewTitle = document.getElementById("reviewTitle");
+const reviewTable = document.getElementById("reviewTable");
+const reviewRows  = document.getElementById("reviewRows");
+const reviewEmpty = document.getElementById("reviewEmpty");
+const sumPassed   = document.getElementById("sumPassed");
+const sumReview   = document.getElementById("sumReview");
+const sumRemoved  = document.getElementById("sumRemoved");
+const sumInfo     = document.getElementById("sumInfo");
+const previewText = document.getElementById("previewText");
+const changesList = document.getElementById("changesList");
+
+// ── Sidebar helpers used by the rewritten renderFindings ──
+const reviewedCats = new Set();
+
+function setReviewed(cat, on) {
+  if (on) reviewedCats.add(cat); else reviewedCats.delete(cat);
+}
+
+// Extract a display value for a detected term (currently: the hearing date)
+function detectedValue(kw) {
+  if (kw.category !== "hearing") return null;
+  const m = output.innerText.match(/next hearing[^.]*?(\d{1,2}\s+[A-Za-z]+\s+\d{4}(?:\s+at\s+\d{1,2}[:.]\d{2}\s?(?:am|pm)?)?)/i);
+  return m ? m[1].trim() : null;
+}
+
+// Which output paragraph a term appears in (read-only scan)
+function findSourceParagraph(kw) {
+  const rx = kw.isRegex
+    ? new RegExp(kw.term, "i")
+    : new RegExp(`\\b${escapeRegex(kw.term)}\\b`, "i");
+  const blocks = output.children;
+  for (let i = 0; i < blocks.length; i++) {
+    if (rx.test(blocks[i].textContent)) return "Paragraph " + (i + 1);
+  }
+  return "Not found";
+}
+
+function viewAllDetails() {
+  if (!analysisOpen) toggleAnalysis();
+  document.getElementById("analysisPanel").scrollIntoView({ block: "start" });
+}
+
+function scrollToReview() {
+  document.getElementById("reviewCard").scrollIntoView({ block: "start" });
+}
+
+// ── Source pane: live stats + placeholder overlay ──
+function refreshSourceStats() {
+  const hasContent = input.innerText.trim().length > 0 || input.querySelector("img, table") !== null;
+  dropOverlay.classList.toggle("hidden", hasContent);
+
+  const html = input.innerHTML;
+  const wordFmt = /style=|<b[\s>]|<strong|<u[\s>]|class="?Mso/i.test(html);
+  statWord.textContent = wordFmt ? "Word formatting detected" : "No Word formatting detected";
+
+  statTables.textContent = input.querySelectorAll("table").length;
+  statLists.textContent  = input.querySelectorAll("ul, ol").length;
+
+  let links = 0;
+  input.querySelectorAll("a").forEach(a => {
+    const href = (a.getAttribute("href") || "").trim();
+    if (/^(https?:|mailto:|www\.)/i.test(href)) links++;
+  });
+  statLinks.textContent = links;
+
+  const text = input.innerText.trim();
+  statWords.textContent = text ? text.split(/\s+/).length.toLocaleString() : "0";
+}
+
+input.addEventListener("input", refreshSourceStats);
+
+// ── Source pane buttons ──
+async function pasteFromClipboard() {
+  input.focus();
+  try {
+    if (navigator.clipboard && navigator.clipboard.read) {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        if (item.types.includes("text/html")) {
+          const blob = await item.getType("text/html");
+          input.innerHTML += await blob.text();
+          refreshSourceStats(); updateCounts();
+          return;
+        }
+      }
+    }
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        input.innerHTML += text.split(/\n/).map(l => "<div>" + l.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</div>").join("");
+        refreshSourceStats(); updateCounts();
+        return;
+      }
+    }
+    statusMsg.textContent = "Clipboard is empty — or press Ctrl+V to paste";
+  } catch (err) {
+    statusMsg.textContent = "Clipboard access unavailable — press Ctrl+V to paste";
+  }
+}
+
+function clearInput() {
+  input.innerHTML = "";
+  refreshSourceStats();
+  updateCounts();
+  input.focus();
+}
+
+// ── "Start new document" — resets both panes and all chrome ──
+function clearAll() {
+  input.innerHTML = "";
+  output.innerHTML = "";
+  output.removeAttribute("style"); // restore the editor's default styling
+  reviewedCats.clear();
+  statusMsg.textContent = "";
+
+  scoreBox.classList.add("waiting");
+  scoreHeadText.textContent = "Awaiting document";
+  scoreValue.textContent = "—";
+  scoreNote.textContent = "Prepare a document to run checks";
+  scoreNote.classList.remove("ok");
+  processedAt.textContent = "Not yet processed";
+
+  reviewTitle.textContent = "Review required — 0 items";
+  reviewTable.style.display = "none";
+  reviewRows.innerHTML = "";
+  reviewEmpty.style.display = "";
+  sumPassed.textContent = sumReview.textContent = sumRemoved.textContent = sumInfo.textContent = "0";
+
+  previewText.textContent = "Prepare a document to see the plain-text compatibility preview.";
+  changesList.innerHTML = "<li>Prepare a document to see the changes made during conversion.</li>";
+  switchTab("formatted");
+
+  refreshSourceStats();
+  updateCounts();
+  if (analysisOpen) runAnalysis(); // existing engine shows its own empty state
+  input.focus();
+}
+
+// ── "Load test order" — fictional sample so the workflow can be tried ──
+function loadSample() {
+  input.innerHTML =
+    '<p style="font-weight:bold">IN THE FAMILY COURT</p>' +
+    '<p>BETWEEN:</p>' +
+    '<p>A (Applicant)</p>' +
+    '<p>&ndash; and &ndash;</p>' +
+    '<p>B (Respondent)</p>' +
+    '<p><u style="font-weight:bold">ORDER</u></p>' +
+    '<p>1. The applicant is granted a Child Arrangements Order in respect of the child, C, born 01.01.2018.</p>' +
+    '<p>2. C shall live with the applicant.</p>' +
+    '<p>3. The respondent shall have time with C as follows:</p>' +
+    '<p>a. Alternate weekends from Friday at 4pm until Sunday at 6pm;</p>' +
+    '<p>b. One evening per week on a Wednesday from 4pm until 7pm.</p>' +
+    "<p>4. The parties shall use the 'Planning Together' platform to assist with communication.</p>" +
+    '<p>5. The next hearing is listed on 14 October 2026 at 10:00am.</p>' +
+    '<p>6. Service upon the respondent to be confirmed by the court. No interpreter is required. The final order is to be lodged within 7 days.</p>' +
+    '<table><tr><td>Court office</td><td>enquiries@familycourt.example.gov.uk</td></tr></table>';
+  refreshSourceStats();
+  updateCounts();
+  statusMsg.textContent = "Test order loaded — select Prepare document";
+}
+
+// ── Output tabs ──
+function switchTab(name) {
+  const tabs  = { formatted: "tabFormatted", preview: "tabPreview", changes: "tabChanges" };
+  const panes = { formatted: "paneFormatted", preview: "panePreview", changes: "paneChanges" };
+  Object.keys(tabs).forEach(k => {
+    document.getElementById(tabs[k]).classList.toggle("active", k === name);
+    document.getElementById(panes[k]).classList.toggle("active", k === name);
+  });
+  if (name === "preview") {
+    previewText.textContent = output.innerText.trim()
+      ? output.innerText
+      : "Prepare a document to see the plain-text compatibility preview.";
+  }
+  if (name === "changes") renderChanges();
+}
+
+// Copy always acts on the formatted pane (copyOutput itself is unchanged)
+function copySurge() {
+  switchTab("formatted");
+  copyOutput();
+}
+
+function downloadReview() {
+  const text = output.innerText.trim();
+  if (!text) {
+    statusMsg.textContent = "Nothing to download — prepare a document first";
+    return;
+  }
+  const blob = new Blob([text], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "surge-review-copy.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── Post-clean checks (read-only inspection of input + output) ──
+function buildReviewItems() {
+  const items = [];
+  const inputText = input.innerText;
+
+  if (/^\s*[ivxlcdm]{2,}[.)]/im.test(inputText)) {
+    items.push({ type: "warn", issue: "Numbering",
+      what: "Roman numeral numbering detected — spacing normalised for the legacy editor.",
+      action: "Check sequence", target: "output" });
+  }
+
+  const tables = input.querySelectorAll("table").length;
+  if (tables > 0) {
+    items.push({ type: "warn", issue: "Table",
+      what: (tables > 1 ? tables + " tables" : "Table") + " converted to plain text for legacy compatibility.",
+      action: "Confirm layout", target: "output" });
+  }
+
+  const images = input.querySelectorAll("img").length;
+  if (images > 0) {
+    items.push({ type: "removed", issue: "Image",
+      what: images + " image" + (images > 1 ? "s" : "") + " removed — images are not supported in Surge.",
+      action: "Review source", target: "input" });
+  }
+
+  const links = output.querySelectorAll("a").length;
+  if (links > 0) {
+    items.push({ type: "info", issue: "Hyperlink",
+      what: links + " hyperlink" + (links > 1 ? "s" : "") + " retained in the output.",
+      action: "Confirm link details", target: "output" });
+  }
+
+  let headings = 0;
+  Array.from(output.children).forEach(block => {
+    const b = block.firstElementChild;
+    if (b && b.tagName === "B" && b.textContent.trim() === block.textContent.trim()) headings++;
+  });
+  if (headings > 0) {
+    items.push({ type: "info", issue: "Headings",
+      what: headings + " short line" + (headings > 1 ? "s" : "") + " formatted as bold headings.",
+      action: "Check headings", target: "output" });
+  }
+
+  return { items, images };
+}
+
+const ROW_ICONS = {
+  warn: '<svg class="row-icon row-icon-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4M12 17.5v.5"/></svg>',
+  info: '<svg class="row-icon row-icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>',
+  removed: '<svg class="row-icon row-icon-removed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>'
+};
+
+function scrollToPane(target) {
+  (target === "input" ? input : output).scrollIntoView({ block: "center" });
+}
+
+function renderChanges() {
+  const paragraphs = output.children.length;
+  if (paragraphs === 0) {
+    changesList.innerHTML = "<li>Prepare a document to see the changes made during conversion.</li>";
+    return;
+  }
+  const bolds = output.querySelectorAll("b").length;
+  const links = output.querySelectorAll("a").length;
+  const { items } = buildReviewItems();
+
+  const rows = [];
+  rows.push(["done", paragraphs + " paragraph" + (paragraphs !== 1 ? "s" : "") + " formatted with standard spacing"]);
+  rows.push(["done", "Word markup, classes and inline styles removed"]);
+  if (bolds > 0) rows.push(["done", bolds + " bold element" + (bolds !== 1 ? "s" : "") + " preserved"]);
+  if (links > 0) rows.push(["done", links + " hyperlink" + (links !== 1 ? "s" : "") + " retained"]);
+  items.filter(i => i.type !== "info").forEach(i => rows.push(["review", i.what]));
+
+  changesList.innerHTML = rows.map(([kind, text]) => `
+    <li>
+      <span class="check-icon ${kind === "done" ? "check-done" : "check-review"}">
+        ${kind === "done"
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'}
+      </span>
+      <span>${text}</span>
+    </li>`).join("");
+}
+
+// Called once at the end of cleanContent(): refreshes score, review
+// table, compatibility summary and the open tab.
+function updateFormatStatus() {
+  const paragraphs = output.children.length;
+  const { items, images } = buildReviewItems();
+  const warnCount = items.filter(i => i.type === "warn").length;
+  const infoCount = items.filter(i => i.type === "info").length;
+
+  // Score: share of converted blocks vs items flagged for review
+  const flagged = warnCount + (images > 0 ? 1 : 0);
+  const score = paragraphs === 0 ? 0 : Math.round((paragraphs / (paragraphs + flagged)) * 100);
+
+  scoreBox.classList.remove("waiting");
+  scoreHeadText.textContent = "Formatting complete";
+  scoreValue.textContent = score + "%";
+  const reviewCount = warnCount + (images > 0 ? 1 : 0);
+  if (reviewCount > 0) {
+    scoreNote.textContent = reviewCount + " item" + (reviewCount !== 1 ? "s" : "") + " need" + (reviewCount === 1 ? "s" : "") + " review";
+    scoreNote.classList.remove("ok");
+  } else {
+    scoreNote.textContent = "All checks passed";
+    scoreNote.classList.add("ok");
+  }
+
+  const now = new Date();
+  processedAt.textContent = "Processed: " +
+    now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) + ", " +
+    now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  // Review table
+  reviewTitle.textContent = "Review required — " + items.length + " item" + (items.length !== 1 ? "s" : "");
+  if (items.length === 0) {
+    reviewTable.style.display = "none";
+    reviewRows.innerHTML = "";
+    reviewEmpty.textContent = "No review items — the document converted without warnings.";
+    reviewEmpty.style.display = "";
+  } else {
+    reviewEmpty.style.display = "none";
+    reviewTable.style.display = "";
+    reviewRows.innerHTML = items.map(i => `
+      <tr>
+        <td class="col-issue"><span class="issue-cell">${ROW_ICONS[i.type]}${i.issue}</span></td>
+        <td>${i.what}</td>
+        <td class="col-action"><button class="link-btn" onclick="scrollToPane('${i.target}')">${i.action}</button></td>
+      </tr>`).join("");
+  }
+
+  // Compatibility summary
+  sumPassed.textContent = paragraphs;
+  sumReview.textContent = warnCount;
+  sumRemoved.textContent = images;
+  sumInfo.textContent = infoCount;
+
+  // Keep whichever tab is open in sync
+  if (document.getElementById("panePreview").classList.contains("active")) previewText.textContent = output.innerText;
+  if (document.getElementById("paneChanges").classList.contains("active")) renderChanges();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SAVED DOCUMENTS ADD-ON
+   Optional feature: load saved Word (.docx) files into an in-memory
+   list and insert one into the source pane — either replacing the
+   current content or added beneath it. Inserted content flows through
+   the existing, unchanged cleaning pipeline: "Prepare document" always
+   processes everything currently in the source pane as one combined
+   document. Files are read locally in the browser and are never
+   uploaded or stored — the list lasts for this session only.
+   ════════════════════════════════════════════════════════════════════ */
+
+// ── DOM refs ──
+const docLibraryInput  = document.getElementById("docLibraryInput");
+const savedDocSelect   = document.getElementById("savedDocSelect");
+const insertModeSelect = document.getElementById("insertModeSelect");
+
+// ── In-memory library: { name, html } — never persisted ──
+const savedDocs = [];
+
+// mammoth.js converts .docx → HTML entirely in the browser. It is
+// loaded lazily on first use, so normal page behaviour is unchanged
+// for anyone who never touches this feature.
+let mammothPromise = null;
+function loadMammoth() {
+  if (window.mammoth) return Promise.resolve(window.mammoth);
+  if (!mammothPromise) {
+    mammothPromise = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js";
+      s.onload = () => resolve(window.mammoth);
+      s.onerror = () => { mammothPromise = null; reject(new Error("mammoth failed to load")); };
+      document.head.appendChild(s);
+    });
+  }
+  return mammothPromise;
+}
+
+function escapeHtmlText(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function renderSavedDocOptions(selectIndex) {
+  if (savedDocs.length === 0) {
+    savedDocSelect.innerHTML = '<option value="">No saved documents yet</option>';
+    savedDocSelect.disabled = true;
+    return;
+  }
+  savedDocSelect.disabled = false;
+  savedDocSelect.innerHTML = savedDocs
+    .map((d, i) => `<option value="${i}">${escapeHtmlText(d.name)}</option>`)
+    .join("");
+  if (typeof selectIndex === "number") savedDocSelect.value = String(selectIndex);
+}
+
+// ── "Add .docx" — read files locally and add them to the dropdown ──
+async function addSavedDocs(fileList) {
+  const all = Array.from(fileList || []);
+  docLibraryInput.value = ""; // allow re-selecting the same file later
+  const files = all.filter(f => /\.docx$/i.test(f.name));
+  const skipped = all.length - files.length;
+
+  if (files.length === 0) {
+    statusMsg.textContent = "Only Word .docx files are supported";
+    return;
+  }
+
+  statusMsg.textContent = "Reading " + files.length + " document" + (files.length !== 1 ? "s" : "") + "…";
+
+  let mammoth;
+  try {
+    mammoth = await loadMammoth();
+  } catch (err) {
+    statusMsg.textContent = "Could not load the Word reader — check your connection and try again";
+    return;
+  }
+
+  let added = 0, failed = 0;
+  for (const file of files) {
+    try {
+      const buffer = await file.arrayBuffer();
+      const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
+      savedDocs.push({ name: file.name, html: result.value });
+      added++;
+    } catch (err) {
+      failed++;
+    }
+  }
+
+  renderSavedDocOptions(savedDocs.length - 1);
+
+  const parts = [];
+  if (added)       parts.push(added + " document" + (added !== 1 ? "s" : "") + " added");
+  if (failed)      parts.push(failed + " could not be read");
+  if (skipped > 0) parts.push(skipped + " skipped (not .docx)");
+  statusMsg.textContent = parts.join(" · ");
+}
+
+// ── Insert the selected document into the source pane ──
+// Replace: clears the source pane first. Add to the bottom: appends
+// beneath whatever is already there, so the next "Prepare document"
+// cleans both parts together as one combined document.
+function insertSavedDoc() {
+  if (savedDocs.length === 0) {
+    statusMsg.textContent = 'No saved documents yet — select "Add .docx" to load one';
+    return;
+  }
+  const doc = savedDocs[Number(savedDocSelect.value)];
+  if (!doc) {
+    statusMsg.textContent = "Select a saved document to insert";
+    return;
+  }
+
+  if (insertModeSelect.value === "replace") {
+    input.innerHTML = doc.html;
+    statusMsg.textContent = "\u201C" + doc.name + "\u201D inserted — existing content replaced";
+  } else {
+    input.innerHTML += doc.html;
+    statusMsg.textContent = "\u201C" + doc.name + "\u201D added beneath the existing content";
+  }
+
+  refreshSourceStats();
+  updateCounts();
+}
+
+// ── Initial state ──
+refreshSourceStats();
+
+</script>
+
+</body>
+</html>
